@@ -7,9 +7,11 @@ agents: 3
 registries:
   create: 
     name: my-registry
+    host: "my-registry.local"
+    hostPort: "5000"
   config: |
     mirrors:
-      "my-registry.local":
+      "my-registry.local:5000":
         endpoint:
           - http://my-registry.local:5000
 ports:
