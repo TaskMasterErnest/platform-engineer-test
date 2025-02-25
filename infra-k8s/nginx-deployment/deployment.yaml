@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  fido-nginx-deployment
+  namespace: default
+  labels:
+    app: fpe-nginx
+spec:
+  selector:
+    matchLabels:
+      app: fpe-nginx
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: fpe-nginx
+    spec:
+      containers:
+      - name: fpe-nginx-container
+        image: my-registry.local:5000/nginx:stable
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+      restartPolicy: Always
