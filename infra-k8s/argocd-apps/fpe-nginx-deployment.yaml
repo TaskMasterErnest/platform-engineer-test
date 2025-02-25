@@ -1,3 +1,5 @@
+# a much better way to ensure this Application syncs directly without waiting on ArgoCD polling is to 
+# deploy a webhook that triggers the sync in ArgoCD
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -8,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/TaskMasterErnest/platform-engineer-test.git
     targetRevision: HEAD
-    path: infra-k8s/nginx
+    path: infra-k8s/nginx-deployment
   destination:
     server: https://kubernetes.default.svc
     namespace: default
