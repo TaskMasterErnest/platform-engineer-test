@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/TaskMasterErnest/platform-engineer-test.git
     targetRevision: HEAD
-    path: infra-k8s/nginx-kustomize/overlays/prod
+    path: infra-k8s/nginx-kustomize/base
   destination:
     server: https://kubernetes.default.svc
     namespace: default
