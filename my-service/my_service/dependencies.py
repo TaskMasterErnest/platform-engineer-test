@@ -25,7 +25,7 @@ async def fetch_argocd_token():
 
     async with aiohttp.ClientSession() as temp_session:
         async with temp_session.post(
-            f"https://{settings.ARGOCD_SERVER}/api/v1/session",
+            f"https://{settings.ARGOCD_URL}/api/v1/session",
                 json=creds.model_dump(),
                 verify_ssl=False,
         ) as resp:
