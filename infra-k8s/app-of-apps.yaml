@@ -1,0 +1,22 @@
+# a much better way to ensure this Application syncs directly without waiting on ArgoCD polling is to 
+# deploy a webhook that triggers the sync in ArgoCD
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/TaskMasterErnest/platform-engineer-test.git
+    targetRevision: HEAD
+    path: infra-k8s/argocd-apps
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
