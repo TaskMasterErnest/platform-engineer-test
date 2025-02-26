@@ -179,3 +179,5 @@ token.pwd
 compose.yaml
 skrrr.py
 check.yaml
+cert.pem
+secret.yaml
