@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fpe-my-service-deployment
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/TaskMasterErnest/platform-engineer-test.git
+    targetRevision: HEAD
+    path: infra-k8s/my-service-kustomize/base
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
