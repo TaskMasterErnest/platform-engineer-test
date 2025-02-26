@@ -36,9 +36,8 @@ async def application_status(token: str = Depends(get_token)):
         logger.info("Getting ArgoCD applications statuses")
         
         response = requests.get(
-            f"https://{settings.ARGOCD_SERVER}/api/v1/applications",
-            headers={"Authorization": f"Bearer {token}"},
-            verify=False
+            f"http://{settings.ARGOCD_SERVER}/api/v1/applications",
+            headers={"Authorization": f"Bearer {token}"}
         )
 
         response.raise_for_status()
@@ -72,9 +71,8 @@ async def list_projects(token: str = Depends(get_token)):
         logger.info("Getting ArgoCD projects list")
 
         response = requests.get(
-            f"https://{settings.ARGOCD_SERVER}/api/v1/projects",
-            headers={"Authorization": f"Bearer {token}"},
-            verify=False
+            f"http://{settings.ARGOCD_SERVER}/api/v1/projects",
+            headers={"Authorization": f"Bearer {token}"}
         )
         response.raise_for_status()
 
