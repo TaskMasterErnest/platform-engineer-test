@@ -1,6 +1,8 @@
 from my_service.config.config import settings
 from my_service.models.models import ArgoCDCreds
 import aiohttp
+import jwt
+import time
 from cachetools import TTLCache
 from my_service.utils.logger import setup_logger
 
@@ -23,7 +25,7 @@ async def fetch_argocd_token():
 
     async with aiohttp.ClientSession() as temp_session:
         async with temp_session.post(
-            f"https://{settings.ARGOCD_URL}/api/v1/session",
+            f"https://{settings.ARGOCD_SERVER}/api/v1/session",
                 json=creds.model_dump(),
                 verify_ssl=False,
         ) as resp:
