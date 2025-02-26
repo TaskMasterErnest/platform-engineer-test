@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  fido-my-service-deployment
+  namespace: default
+  labels:
+    app: my-service
+spec:
+  selector:
+    matchLabels:
+      app: my-service
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: my-service
+    spec:
+      containers:
+      - name: my-service-container
+        image: my-registry.local:5000/my-service:latest
+        ports:
+          - containerPort: 9000
+        env:
+          - name: ARGOCD_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: ARGOCD_USERNAME
+          - name: ARGOCD_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: ARGOCD_PASSWORD
+          - name: ARGOCD_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: ARGOCD_SERVER
+          - name: ARGOCD_PORT
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: ARGOCD_PORT
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 250m
+            memory: 128Mi
+        livenessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 9000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /healthcheck
+            port: 9000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      restartPolicy: Always
