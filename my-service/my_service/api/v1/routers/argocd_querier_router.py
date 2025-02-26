@@ -4,7 +4,7 @@ from my_service.dependencies import get_token
 from my_service.utils.logger import setup_logger
 from my_service.config.config import settings
 from my_service.models.models import ApplicationStatusResponse, ProjectListResponse
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from typing import List, Dict
 import requests
 
@@ -32,30 +32,29 @@ async def application_status(token: str = Depends(get_token)):
     Returns:
         applications_data_concise: concise application metadata json structure
     """
-    ##############################################################################
-    # Please complete the fastapi route to get applications metadata from argocd #
-    # Make sure to use argocd token for authentication                           #  
-    ##############################################################################
-    logger.info("Getting ArgoCD applications statuses")
-    
-    response = requests.get(
-        f"https://{settings.ARGOCD_SERVER}/api/v1/applications",
-        headers={"Authorization": f"Bearer {token}"},
-        verify=False
-    )
+    try:
+        logger.info("Getting ArgoCD applications statuses")
+        
+        response = requests.get(
+            f"https://{settings.ARGOCD_SERVER}/api/v1/applications",
+            headers={"Authorization": f"Bearer {token}"},
+            verify=False
+        )
 
-    response.raise_for_status()
+        response.raise_for_status()
 
-    applications = response.json().get("items") or []
+        applications = response.json().get("items") or []
 
-    return {
-            "applications": [
-                {
-                    "application_name": app["metadata"]["name"],
-                    "status": app["status"]["sync"]["status"]
-                } for app in applications
-            ]
-        }
+        return {
+                "applications": [
+                    {
+                        "application_name": app["metadata"]["name"],
+                        "status": app["status"]["sync"]["status"]
+                    } for app in applications
+                ]
+            }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching applications and statuses: {str(e)}")
 
 
 
@@ -69,28 +68,25 @@ async def list_projects(token: str = Depends(get_token)):
     Returns:
         projects_data_concise: concise argocd projects metadata json structure
     """
+    try: 
+        logger.info("Getting ArgoCD projects list")
 
-    ##########################################################################
-    # Please complete the fastapi route to get projects metadata from argocd #
-    # Make sure to use argocd token for authentication                       #  
-    ##########################################################################
+        response = requests.get(
+            f"https://{settings.ARGOCD_SERVER}/api/v1/projects",
+            headers={"Authorization": f"Bearer {token}"},
+            verify=False
+        )
+        response.raise_for_status()
 
-    logger.info("Getting ArgoCD projects list")
+        projects = response.json().get("items") or []
 
-    response = requests.get(
-        f"https://{settings.ARGOCD_SERVER}/api/v1/projects",
-        headers={"Authorization": f"Bearer {token}"},
-        verify=False
-    )
-    response.raise_for_status()
-
-    projects = response.json().get("items") or []
-
-    return {
-            "projects": [
-                {
-                    "project_name": project["metadata"]["name"],
-                    "namespace": "argocd"
-                } for project in projects
-            ]
-        }
+        return {
+                "projects": [
+                    {
+                        "project_name": project["metadata"]["name"],
+                        "namespace": "argocd"
+                    } for project in projects
+                ]
+            }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error fetching projects: {str(e)}")
