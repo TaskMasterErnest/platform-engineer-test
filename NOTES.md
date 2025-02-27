@@ -23,3 +23,9 @@ k3d cluster create -c k3d-config.yaml
 ---
 
 4. I created an [app-of-apps.yaml](infra-k8s/app-of-apps.yaml) file that can be used to deploy the services wrt GitOps principles.
+
+---
+
+Check out the demo with this gif.
+
+![Demo](misc/fpe.demo.gif)
